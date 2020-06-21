@@ -1,6 +1,6 @@
 const $router = {
-    init: function(){
-        location.hash='/'
+    init: function () {
+        location.hash = '/'
     },
     get: function (...after) {
         // normally pass nothing
@@ -18,34 +18,56 @@ const $router = {
         let i
         let newPath = '/'
         for (i = 0; i < after.length - 1; i++) {
-            if(after[i] == undefined){
-                if(before[i]==undefined) console.error(`past path[${i}] is missing, using undefined`,before,after)
-                newPath+=before[i]+'/'
-            }else{
-                newPath+=after[i]+'/'
+            if (after[i] == undefined) {
+                if (before[i] == undefined) console.error(`past path[${i}] is missing, using undefined`, before, after)
+                newPath += before[i] + '/'
+            } else {
+                newPath += after[i] + '/'
             }
         }
 
-        if(after[i] == undefined){
-            if(before[i]==undefined) console.error(`past path[${i}] is missing, using undefined`,before,after)
-            newPath+=before[i]
-        }else{
-            newPath+=after[i]
+        if (after[i] == undefined) {
+            if (before[i] == undefined) console.error(`past path[${i}] is missing, using undefined`, before, after)
+            newPath += before[i]
+        } else {
+            newPath += after[i]
         }// last path do not add '/'
 
 
-        return newPath
+        return newPath.slice(1)
     },
     set: function (...args) {
         if (args.length = 1) args = args[0]
         location.hash = this.get(args)
     }
+
 };
 
-Object.defineProperty($router,'path',{
+Object.defineProperty($router, 'path', {
     // pass and return String
-    get(){return this.get()},
-    set(str){this.set(str)}
+    get() { return this.get() },
+    set(str) { this.set(str) }
 })
 
-window.$router=$router
+Object.assign($router, {
+    _cached: new Map(),
+    getCachedXhr: function (url) { // simple GET function, promise return XMLHTTPRequest Object
+        return new Promise((resolve, reject) => {
+            if (this._cached.has(url)) {
+                resolve(this._cached.get(url))
+            } else {
+                let xhr = new XMLHttpRequest()
+                xhr.open('GET', url)
+                xhr.onload = () => {
+                    this._cached.set(url, xhr)
+                    resolve(xhr)
+                }
+                xhr.onerror = () => reject(xhr)
+                xhr.send()
+            }
+
+        })
+    }
+})
+
+window.$router = $router
