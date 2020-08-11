@@ -1,7 +1,7 @@
 const $router = {
   init: function () {
-    if (!location.hash.slice(1).startsWith("/"))
-      location.hash = "/" + location.hash.slice(1);
+    if (!location.hash.slice(1).startsWith('/'))
+      location.hash = '/' + location.hash.slice(1);
   },
   get: function (...after) {
     /**
@@ -17,22 +17,22 @@ const $router = {
     if (after.length === 0 || after[1] == undefind)
       return location.hash.slice(2);
     if (after.length === 1) after = after[0];
-    if (typeof after === "string") after = after.split("/");
+    if (typeof after === 'string') after = after.split('/');
     // things above, can make sure 'after' is an array
     if (!Array.isArray(after))
       throw new Error(
-        "incoming parameters must be String or Array or Multiple Parameters"
+        'incoming parameters must be String or Array or Multiple Parameters'
       );
-    let before = location.hash.slice(2).split("/");
+    let before = location.hash.slice(2).split('/');
     let i;
-    let newPath = "/";
+    let newPath = '/';
     for (i = 0; i < after.length - 1; i++) {
       if (after[i] == undefined) {
         if (before[i] == undefined)
           throw new Error(`past path[${i}] is missing`);
-        newPath += before[i] + "/";
+        newPath += before[i] + '/';
       } else {
-        newPath += after[i] + "/";
+        newPath += after[i] + '/';
       }
     }
 
@@ -46,12 +46,12 @@ const $router = {
     return newPath.slice(1);
   },
   set: function (...args) {
-    if ((args.length = 1)) args = args[0];
+    if (args.length === 1) args = args[0];
     location.hash = this.get(args);
   },
 };
 
-Object.defineProperty($router, "path", {
+Object.defineProperty($router, 'path', {
   // pass and return String
   get() {
     return this.get();
@@ -61,10 +61,10 @@ Object.defineProperty($router, "path", {
   },
 });
 
-Object.defineProperty($router, "array", {
+Object.defineProperty($router, 'array', {
   // pass and return Array
   get() {
-    return this.get().split("/");
+    return this.get().split('/');
   },
   set(arr) {
     this.set(arr);
@@ -80,7 +80,7 @@ Object.assign($router, {
         resolve(this._cached.get(url));
       } else {
         let xhr = new XMLHttpRequest();
-        xhr.open("GET", url);
+        xhr.open('GET', url);
         xhr.onload = () => {
           this._cached.set(url, xhr);
           resolve(xhr);

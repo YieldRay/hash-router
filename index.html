@@ -14,11 +14,11 @@
     <button>GO</button>
     <script>
       let $ = (q) => document.querySelectorAll(q);
-      let p = $("#msg")[0];
-      let input = $("input")[0];
-      let button = $("button")[0];
+      let p = $('#msg')[0];
+      let input = $('input')[0];
+      let button = $('button')[0];
       window.onhashchange = window.onload = () => {
-        p.innerHTML = "Hash is: " + $router.path;
+        p.innerHTML = 'Hash is: ' + $router.path;
       };
       button.onclick = () => {
         $router.path = input.value;
