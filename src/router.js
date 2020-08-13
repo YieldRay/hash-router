@@ -3,12 +3,12 @@ const $router = {
     if (!location.hash.slice(1).startsWith('/'))
       location.hash = '/' + location.hash.slice(1);
   },
+  /**
+   * @param {String|Array|null} after - input 'a/b/c' or ['a','b','c']
+   * @static {String} - current hash
+   * @return {String} - expected hash
+   */
   get: function (...after) {
-    /**
-     * @param {String|Array|null} after input 'a/b/c' or ['a','b','c']
-     * @static {String} current hash
-     * @return {String} expected hash
-     */
     this.init();
     // use slice(2) to leave hash after [url]#/
     // for example, url 'http://localhost/index.html#/test/abc' will leave 'test/abc'
@@ -68,6 +68,28 @@ Object.defineProperty($router, 'array', {
   },
   set(arr) {
     this.set(arr);
+  },
+});
+
+Object.defindProperty($router, 'modify', {
+  set(type, ...args) {
+    let tmp = args;
+    if (typeof args[0] === 'array') tmp = args[0];
+    if (typeof args[0] === 'string') tmp = args[0].split('/');
+    switch (type) {
+      case 'array':
+      case 'Array':
+        return tmp;
+        break;
+
+      case 'string':
+      case 'String':
+        return tmp.join('/');
+        break;
+
+      default:
+        throw new Error(`Wrong type <${type}>`);
+    }
   },
 });
 
