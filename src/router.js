@@ -1,9 +1,13 @@
 const $router = {
+  /**
+   * @function init
+   */
   init: function () {
     if (!location.hash.slice(1).startsWith('/'))
       location.hash = '/' + location.hash.slice(1);
   },
   /**
+   * @function get
    * @param {String|Array|null} after - input 'a/b/c' or ['a','b','c']
    * @static {String} - current hash
    * @return {String} - expected hash
@@ -45,6 +49,11 @@ const $router = {
 
     return newPath.slice(1);
   },
+  /**
+   * @function set
+   * @param {String|Array|multi-params} args - go to hash want to go
+   * @static {undefind}
+   */
   set: function (...args) {
     if (args.length === 1) args = args[0];
     location.hash = this.get(args);
@@ -52,7 +61,9 @@ const $router = {
 };
 
 Object.defineProperty($router, 'path', {
-  // pass and return String
+  /**
+   * @member path - string getter/setter
+   */
   get() {
     return this.get();
   },
@@ -62,7 +73,9 @@ Object.defineProperty($router, 'path', {
 });
 
 Object.defineProperty($router, 'array', {
-  // pass and return Array
+  /*
+   * @member array - array getter/setter
+   */
   get() {
     return this.get().split('/');
   },
@@ -72,6 +85,11 @@ Object.defineProperty($router, 'array', {
 });
 
 Object.defindProperty($router, 'modify', {
+  /**
+   * @function modify
+   * @param {String=[[A|a]rray,[S|s]tring]}
+   * @param {String|Array|multi-params}
+   */
   set(type, ...args) {
     let tmp = args;
     if (typeof args[0] === 'array') tmp = args[0];
@@ -94,9 +112,59 @@ Object.defindProperty($router, 'modify', {
 });
 
 Object.assign($router, {
+  /**
+   * @function bind - $router.bind(/regexp/,'#hash')
+   * @param {RegExp|String} regexp - to match a new-found hash, first word is '#' !
+   * @param {function} func - if matched, call this function
+   * @return {Object} - return this, allowing chain calls
+   *
+   * @function unbind
+   * @param {RegExp|String} regexp - to match a new-found hash, first word is '#' !
+   * @return {Object} - return this, allowing chain calls
+   *
+   * @function unbindAll
+   * @static {Object} - return this, allowing chain calls
+   *
+   * @protected {Map} _bound
+   */
+  _bound: new Map(),
+  bind(regexp, func) {
+    // prevent twice bind
+    if (this._bound.has(regexp))
+      throw new Error('One hash can only bind one function');
+    this._bound.set(regexp, function () {
+      if (regexp.test(location.href)) {
+        func();
+      }
+    });
+    window.addEventListener('hashchange', this._bound.get(regexp));
+    return this;
+  },
+  unbind(regexp) {
+    window.removeEventListener('hashchange', this._bound.get(regexp));
+    if (!this._bound.delete(regexp)) throw new Error(`Unbind ${regexp} failed`);
+    return this;
+  },
+  unbindAll() {
+    for (let key of this_.bound) {
+      window.removeEventListener('hashchange', this._bound.get(key));
+      // if(!this._bound.delete(key)) throw new Error(`Unbind ${key} failed`)
+    }
+    this_.bound.clear();
+    return this;
+  },
+});
+
+Object.assign($router, {
+  /**
+   * @function getCachedXhr - simple GET function, promise return XMLHTTPRequest Object
+   * @param {String} url
+   * @param {function} settings - (xhr)=>{// control xhr before xhr.send() }
+   * @return {Object} - XMLHTTPRequest Object
+   * @protected {Map} _cached - if someting wrong, operate it
+   */
   _cached: new Map(),
-  getCachedXhr: function (url) {
-    // simple GET function, promise return XMLHTTPRequest Object
+  getCachedXhr: function (url, settings) {
     return new Promise((resolve, reject) => {
       if (this._cached.has(url)) {
         resolve(this._cached.get(url));
@@ -108,6 +176,7 @@ Object.assign($router, {
           resolve(xhr);
         };
         xhr.onerror = () => reject(xhr);
+        settings(xhr);
         xhr.send();
       }
     });
