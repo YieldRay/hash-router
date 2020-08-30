@@ -7,22 +7,40 @@
     <script src="src/router.js"></script>
   </head>
   <body>
-    <h1>directRouter</h1>
+    <h1>hashRouter</h1>
     <p>hash go directly!</p>
     <p id="msg"></p>
+    <button>$router.path =</button>
     <input type="text" />
-    <button>GO</button>
+    <br>
+    <button>$router.array =</button>
+    <input type="text" />
     <script>
+    function loadScript(src, callback) { let script = document.createElement('script'); script.src = src; script.onload = () => callback(script); document.head.append(script); }  loadScript('https://crazywhite.gitee.io/pixivviewer/src/vconsole.min.js', script => { new VConsole(); });
+    
       let $ = (q) => document.querySelectorAll(q);
+      let _ = $router;
+      Object.assign(window, _)
       let p = $('#msg')[0];
-      let input = $('input')[0];
-      let button = $('button')[0];
-      window.onhashchange = window.onload = () => {
-        p.innerHTML = 'Hash is: ' + $router.path;
+      onhashchange = window.onload = () => {
+        p.innerHTML = `
+        Raw hash: ${location.hash}<br>
+        Hash is: ${$router.path}<br>
+        Param: ['${$router.array.join("', '")}']
+        `;
+        console.debug(location.hash);
       };
-      button.onclick = () => {
-        $router.path = input.value;
+      $('button')[0].onclick = () => {
+        $router.path = $('input')[0].value;
       };
+      
+      $('button')[1].onclick = () => {
+        $router.array = eval($('input')[1].value);
+      };
+
+      $router.bind(/test/, () => {
+        console.log('hello, router!');
+      });
     </script>
   </body>
 </html>
