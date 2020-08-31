@@ -74,6 +74,50 @@ Object.defineProperty($router, 'path', {
   },
 });
 
+Object.defineProperty($router, 'pathname', {
+  /**
+   * @member pathname - string getter/setter
+   */
+  get() {
+    const path = this.path;
+    return path.slice(0, path.indexOf('?'));
+  },
+  set(str) {
+    if (str.includes('?') || str.includes('#'))
+      throw new Error('Cannot be a pathname');
+    this.path = str + this.search;
+  },
+});
+
+Object.defineProperty($router, 'search', {
+  /**
+   * @member search - string getter/setter
+   */
+  get() {
+    const path = this.path;
+    return path.slice(path.indexOf('?'));
+  },
+  set(str) {
+    if (!str.startsWith('?')) throw new Error('Not a search string');
+    this.path = this.pathname + str;
+  },
+});
+
+Object.defineProperty($router, 'query', {
+  /*
+   * @member query - this query is some string after '?' of hash
+   */
+  get() {
+    const path = this.path;
+    return path.slice(path.indexOf('?') + 1, path.length);
+  },
+  set(str) {
+    if (typeof str !== 'string')
+      throw new Error('incoming parameters must be String');
+    this.path = this.pathname + '?' + str;
+  },
+});
+
 Object.defineProperty($router, 'array', {
   /*
    * @member array - array getter/setter
@@ -167,9 +211,31 @@ Object.assign($router, {
 
 Object.assign($router, {
   /*
+   * @function stringifyQuery
+   * @param q {Object}
+   * @return {Object} - parse {a:'1', b:'2'} to 'a=1&b=2'
+   */
+  stringifyQuery(q) {
+    if (typeof q !== 'object')
+      throw new Error('incoming parameters must be String');
+    let param = '';
+    for (k in q) {
+      let v = q[k];
+      if (Array.isArray(v)) {
+        for (e of v) {
+          param += `${k}=${e}&`;
+        }
+      } else {
+        param += `${k}=${v}&`;
+      }
+    }
+    param = param.slice(0, -1);
+    return param;
+  },
+  /*
    * @function parseQuery
    * @param path {String} - if not string, return itself
-   * @return {Object} - make 'a=1&b=2' to {a:'1', b:'2'}
+   * @return {Object} - parse 'a=1&b=2' to {a:'1', b:'2'}
    */
   parseQuery(path) {
     if (typeof path !== 'string') return path;
@@ -178,11 +244,20 @@ Object.assign($router, {
       .split('&')
       .filter((e) => e.length > 0)
       .forEach((e) => {
-        let pos = e.indexOf('=');
-        if (pos > -1) {
-          obj[e.slice(0, pos)] = e.slice(pos + 1);
+        // e: key=value or key
+        const pos = e.indexOf('=');
+        const key = e.slice(0, pos),
+          value = e.slice(pos + 1);
+        // key,value
+        const exist = obj[key];
+        if (exist) {
+          if (typeof exist === 'string') {
+            obj[key] = [exist, value];
+          } else {
+            obj[key].push(value);
+          }
         } else {
-          obj[e] = '';
+          obj[key] = value;
         }
       });
     return obj;
@@ -193,39 +268,6 @@ Object.assign($router, {
    */
   pushQuery(q) {
     this.query = { ...this.query, ...this.parseQuery(q) };
-  },
-});
-
-Object.defineProperty($router, 'query', {
-  /*
-   * @member query - this query is some string after '?' of hash
-   */
-  get() {
-    const path = this.path;
-    if (!path.includes('?')) return Object.create(null);
-    return this.parseQuery(path.slice(path.indexOf('?') + 1, path.length));
-  },
-  set(q) {
-    let path = this.path;
-    const pos = path.indexOf('?');
-    let param = '?';
-    switch (typeof q) {
-      case 'object':
-        for (k in q) {
-          param += `${k}=${q[k]}&`;
-        }
-        param = param.slice(0, -1);
-        break;
-      case 'string':
-        param += q;
-        break;
-      default:
-        throw new Error('incoming parameters must be Object or String');
-    }
-    if (pos > -1) path = path.slice(0, pos);
-    // path does not include '?'
-    // because path includes '?'
-    this.path = path + param;
   },
 });
 

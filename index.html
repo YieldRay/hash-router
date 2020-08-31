@@ -25,7 +25,7 @@
         Raw hash: ${location.hash}<br>
         Hash is: ${$router.path}<br>
         Param: ['${$router.array.join("', '")}']<br>
-        Hash query: ${JSON.stringify($router.query)}
+        Hash query: ${JSON.stringify($router.parseQuery($router.query))}
         `;
         $('input')[0].value = $router.path;
         $('input')[1].value = `['${$router.array.join("', '")}']`;
