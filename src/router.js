@@ -79,8 +79,8 @@ Object.defineProperty($router, 'array', {
    * @member array - array getter/setter
    */
   get() {
-  // FIXIT
-  // last element, if include '?', remove it
+    // FIXIT
+    // last element, if include '?', remove it
     return this.path.split('/');
   },
   set(arr) {
@@ -165,19 +165,11 @@ Object.assign($router, {
   },
 });
 
-/*
 Object.assign($router, {
-  handle: function (regexp, f) {},
-})
-*/
-
-Object.defineProperty($router, 'query', {
-  get() {
+  parseQuery(path) {
+    if (typeof path !== 'string') return path;
     const obj = Object.create(null);
-    const path = this.path;
-    if (!path.includes('?')) return obj;
     path
-      .slice(1 - path.lastIndexOf('?'))
       .split('&')
       .filter((e) => e.length > 0)
       .forEach((e) => {
@@ -189,6 +181,39 @@ Object.defineProperty($router, 'query', {
         }
       });
     return obj;
+  },
+  pushQuery(q) {
+    this.query = { ...this.query, ...this.parseQuery(q) };
+  },
+});
+
+Object.defineProperty($router, 'query', {
+  get() {
+    const path = this.path;
+    if (!path.includes('?')) return Object.create(null);
+    return this.parseQuery(path.slice(1 - path.lastIndexOf('?')));
+  },
+  set(q) {
+    let path = this.path;
+    const pos = path.indexOf('?');
+    let param = '?';
+    switch (typeof q) {
+      case 'object':
+        for (k in q) {
+          param += `${k}=${q[k]}&`;
+        }
+        param = param.slice(0, -1);
+        break;
+      case 'string':
+        param += q;
+        break;
+      default:
+        throw new Error('incoming parameters must be Object or String');
+    }
+    if (pos > -1) path = path.slice(0, pos);
+    // path does not include '?'
+    // because path includes '?'
+    this.path = path + param;
   },
 });
 
