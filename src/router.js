@@ -13,7 +13,6 @@ const $router = {
    * @return {String} - expected hash
    */
   get: function (...after) {
-  // FIXIT
     this.fix();
     // use slice(2) to leave hash after [url]#/
     // for example, url 'http://localhost/index.html#/test/abc' will leave 'test/abc'
@@ -27,11 +26,12 @@ const $router = {
       throw new Error(
         'incoming parameters must be String or Array or Multiple Parameters'
       );
-    let before = this.array;
+    const before = this.array;
+    console.log(before, after);
     let i;
     let newPath = '/';
     for (i = 0; i < after.length - 1; i++) {
-      if (after[i] == undefined) {
+      if (after[i] == undefined || after[i] == '') {
         if (before[i] == undefined)
           throw new Error(`past path[${i}] is missing`);
         newPath += before[i] + '/';
@@ -79,6 +79,8 @@ Object.defineProperty($router, 'array', {
    * @member array - array getter/setter
    */
   get() {
+  // FIXIT
+  // last element, if include '?', remove it
     return this.path.split('/');
   },
   set(arr) {
@@ -163,11 +165,32 @@ Object.assign($router, {
   },
 });
 
- /*
+/*
 Object.assign($router, {
   handle: function (regexp, f) {},
-});
+})
 */
+
+Object.defineProperty($router, 'query', {
+  get() {
+    const obj = Object.create(null);
+    const path = this.path;
+    if (!path.includes('?')) return obj;
+    path
+      .slice(1 - path.lastIndexOf('?'))
+      .split('&')
+      .filter((e) => e.length > 0)
+      .forEach((e) => {
+        let pos = e.indexOf('=');
+        if (pos > -1) {
+          obj[e.slice(0, pos)] = e.slice(pos + 1);
+        } else {
+          obj[e] = '';
+        }
+      });
+    return obj;
+  },
+});
 
 Object.assign($router, {
   /**
