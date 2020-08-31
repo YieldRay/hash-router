@@ -166,6 +166,11 @@ Object.assign($router, {
 });
 
 Object.assign($router, {
+  /*
+   * @function parseQuery
+   * @param path {String} - if not string, return itself
+   * @return {Object} - make 'a=1&b=2' to {a:'1', b:'2'}
+   */
   parseQuery(path) {
     if (typeof path !== 'string') return path;
     const obj = Object.create(null);
@@ -182,16 +187,23 @@ Object.assign($router, {
       });
     return obj;
   },
+  /*
+   * @function pushQuery
+   * @param q {Object|String}
+   */
   pushQuery(q) {
     this.query = { ...this.query, ...this.parseQuery(q) };
   },
 });
 
 Object.defineProperty($router, 'query', {
+  /*
+   * @member query - this query is some string after '?' of hash
+   */
   get() {
     const path = this.path;
     if (!path.includes('?')) return Object.create(null);
-    return this.parseQuery(path.slice(1 - path.lastIndexOf('?')));
+    return this.parseQuery(path.slice(path.indexOf('?') + 1, path.length));
   },
   set(q) {
     let path = this.path;
