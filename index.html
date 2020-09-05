@@ -1,48 +1,47 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ROUTER TEST</title>
-    <script src="src/router.js"></script>
-  </head>
-  <body>
-    <h1>hashRouter</h1>
-    <p>hash go directly!</p>
-    <p id="msg"></p>
-    <button>$router.path =</button>
-    <input type="text" />
-    <br />
-    <button>$router.array =</button>
-    <input type="text" />
-    <script>
-      let $ = (q) => document.querySelectorAll(q);
-      let _ = $router;
-      Object.assign(window, _);
-      let p = $('#msg')[0];
-      onhashchange = window.onload = () => {
-        p.innerHTML = `
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>ROUTER TEST</title>
+        <script src="src/router.js"></script>
+    </head>
+    <body>
+        <h1>hashRouter</h1>
+        <p>hash go directly!</p>
+        <p id="msg"></p>
+        <button>$router.path =</button>
+        <input type="text" />
+        <br />
+        <button>$router.array =</button>
+        <input type="text" />
+        <script>
+            window.$ = q => document.querySelectorAll(q);
+            window._ = $router;
+
+            onhashchange = onload = () => {
+                $('#msg')[0].innerHTML = `
         Raw hash: ${location.hash}<br>
         Hash is: ${$router.path}<br>
         Param: ['${$router.array.join("', '")}']<br>
-        Hash query: ${JSON.stringify($router.parseQuery($router.query))}
+        Hash search: ${JSON.stringify($router.parseSearch($router.search))}
         `;
-        $('input')[0].value = $router.path;
-        $('input')[1].value = `['${$router.array.join("', '")}']`;
-        console.debug(location.hash);
-      };
+                $('input')[0].value = $router.path;
+                $('input')[1].value = `['${$router.array.join("', '")}']`;
+                console.debug(location.hash);
+            };
 
-      $('button')[0].onclick = () => {
-        $router.path = $('input')[0].value;
-      };
+            $('button')[0].onclick = () => {
+                $router.path = $('input')[0].value;
+            };
 
-      $('button')[1].onclick = () => {
-        $router.array = eval($('input')[1].value);
-      };
+            $('button')[1].onclick = () => {
+                $router.array = eval($('input')[1].value);
+            };
 
-      $router.bind(/test/, () => {
-        console.log('hello, router!');
-      });
-    </script>
-  </body>
+            $router.bind(/test/, () => {
+                console.log('hello, router!');
+            });
+        </script>
+    </body>
 </html>

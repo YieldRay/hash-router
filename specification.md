@@ -5,7 +5,7 @@
 对于一个 url：http://localhost/index.html#/foo/bar  
 其路径为：foo/bar 路径参数为：['foo', 'bar']
 
-对于一个有关路径的方法，一般支持对路径进行三种表达：
+对于一个有关路径的方法，支持对路径进行三种表达：
 
 1. 字符串表达  
    例如：\$router.set('a/b/c')

@@ -1,20 +1,20 @@
 {
-  "name": "hashrouter",
-  "version": "0.0.1",
-  "description": "",
-  "main": "src/router.js",
-  "scripts": {
-    "test": "xdg-open index.html",
-    "prettier": "prettier --write ./src --single-quote"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Crazy-White/hashRouter.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Crazy-White/hashRouter/issues"
-  },
-  "homepage": "https://github.com/Crazy-White/hashRouter#readme"
+    "name": "hashrouter",
+    "version": "0.0.1",
+    "description": "",
+    "main": "src/router.js",
+    "scripts": {
+        "test": "xdg-open index.html",
+        "prettier": "prettier --write . --single-quote --tab-width 4 --print-width 160 --arrow-parens avoid"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Crazy-White/hashRouter.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Crazy-White/hashRouter/issues"
+    },
+    "homepage": "https://github.com/Crazy-White/hashRouter#readme"
 }
