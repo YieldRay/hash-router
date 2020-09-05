@@ -76,7 +76,9 @@ Object.defineProperty($router, 'pathname', {
      */
     get() {
         const path = this.path;
-        return path.slice(0, path.indexOf('?'));
+        const pos = path.indexOf('?');
+        if (pos > -1) return path.slice(0, pos);
+        return path;
     },
     set(str) {
         if (str.includes('?') || str.includes('#')) throw new Error('Cannot be a pathname');
@@ -90,7 +92,9 @@ Object.defineProperty($router, 'search', {
      */
     get() {
         const path = this.path;
-        return path.slice(path.indexOf('?') + 1, path.length);
+        const pos = path.indexOf('?');
+        if (pos > -1) return path.slice(pos + 1, path.length);
+        return '';
     },
     set(str) {
         if (typeof str !== 'string') throw new Error('incoming parameters must be String');
@@ -106,7 +110,7 @@ Object.defineProperty($router, 'array', {
         return this.pathname.split('/');
     },
     set(arr) {
-        this.path = arr.join('/');
+        this.pathname = arr.join('/');
     },
 });
 

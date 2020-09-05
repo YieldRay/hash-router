@@ -22,9 +22,10 @@
             onhashchange = onload = () => {
                 $('#msg')[0].innerHTML = `
         Raw hash: ${location.hash}<br>
-        Hash is: ${$router.path}<br>
-        Param: ['${$router.array.join("', '")}']<br>
-        Hash search: ${JSON.stringify($router.parseSearch($router.search))}
+        path: ${$router.path}<br>
+        pathname: ${$router.pathname}<br>
+        array: ['${$router.array.join("', '")}']<br>
+        search: ${$router.search} -> ${JSON.stringify($router.parseSearch($router.search))}
         `;
                 $('input')[0].value = $router.path;
                 $('input')[1].value = `['${$router.array.join("', '")}']`;
