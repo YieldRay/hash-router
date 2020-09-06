@@ -18,13 +18,12 @@ const $router = {
         // for example, url 'http://localhost/index.html#/test/abc' will leave 'test/abc'
         // thus, make sure the first string after [url]# is '/'
         // we need initialize the page with location.hash='/'
-        if (after.length === 0) return this.path;
+        if (after.length === 0) return this.pathname;
         else if (after.length === 1) after = after[0];
         if (typeof after === 'string') after = after.split('/');
         // things above, can make sure 'after' is an array
         if (!Array.isArray(after)) throw new Error('incoming parameters must be String or Array or Multiple Parameters');
         const before = this.array;
-        console.log(before, after);
         let i;
         let newPath = '/';
         for (i = 0; i < after.length - 1; i++) {

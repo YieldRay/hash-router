@@ -42,16 +42,16 @@ console.log($router.path); // a/b/
 
 ### \$router.get()
 
-Get the expected pathname
+获取预期路径名
 
 ```javascript
-$router.get(); // equal to $router.pathname
+$router.get(); // 等于$router.pathname
 $router.get([null, null, 'ddd']); // aaa/bbb/ddd
 ```
 
 ### \$router.set()
 
-Set the path
+设置路径
 
 ```javascript
 $router.set('a/b/c');
@@ -61,7 +61,7 @@ $router.set('a', 'b', 'c');
 
 ### \$router.modify()
 
-Format some parameters
+解析一些参数
 
 ```javascript
 $router.modify('array', 'a/b/c'); // ['a', 'b', 'c']
@@ -71,7 +71,7 @@ $router.modify('string', 'a', 'b', 'c'); // 'a/b/c'
 
 ### \$router.parseSearch()
 
-Parse query string
+解析查询字符串
 
 ```javascript
 $router.parseSearch({ a: '1', b: '2' }); // a=1&b=2
@@ -79,7 +79,7 @@ $router.parseSearch({ a: '1', b: '2' }); // a=1&b=2
 
 ### \$router.stringifySearch()
 
-Encodes the object as a query string
+将对象编码为查询字符串
 
 ```javascript
 $router.stringifySearch($router.search); // {"x":"1","y":["2","3"],"z":""}
@@ -87,7 +87,7 @@ $router.stringifySearch($router.search); // {"x":"1","y":["2","3"],"z":""}
 
 ### \$router.bind()
 
-Binds the handler function for the path. The first argument is a regular expression, and the second argument is a function. When the path is updated, the function executes if the regular expression matches successfully
+为路径绑定处理函数。第一个参数为正则表达式，第二个参数为一个函数。路径更新时，若正则表达式匹配成功，则执行该函数
 
 ```javascript
 $router.bind(/test/, () => alert('hi~')).bind(/test2/, () => alert('hey~'));
@@ -95,7 +95,7 @@ $router.bind(/test/, () => alert('hi~')).bind(/test2/, () => alert('hey~'));
 
 ### \$router.unbind()
 
-Remove the binding. Notice: The regular expression should be the same as that used in \$router.bind()
+解除绑定。注意：该正则表达式需与绑定时一致。
 
 ```javascript
 $router.unbind(/test/);
@@ -103,7 +103,7 @@ $router.unbind(/test/);
 
 ### \$router.unbindAll()
 
-Unbind all
+解绑所有处理函数
 
 ```javascript
 $router.unbindAll();
