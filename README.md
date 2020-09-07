@@ -51,12 +51,13 @@ $router.get([null, null, 'ddd']); // aaa/bbb/ddd
 
 ### \$router.set()
 
-Set the path
+Set the path to expected
 
 ```javascript
 $router.set('a/b/c');
 $router.set(['a', 'b', 'c']);
 $router.set('a', 'b', 'c');
+$router.set([null, null, 'ddd']); // to aaa/bbb/ddd
 ```
 
 ### \$router.modify()
@@ -71,10 +72,10 @@ $router.modify('string', 'a', 'b', 'c'); // 'a/b/c'
 
 ### \$router.parseSearch()
 
-Parse query string
+Parse the query string as a object
 
 ```javascript
-$router.parseSearch({ a: '1', b: '2' }); // a=1&b=2
+$router.parseSearch($router.search); // {"x":"1","y":["2","3"],"z":""}
 ```
 
 ### \$router.stringifySearch()
@@ -82,12 +83,12 @@ $router.parseSearch({ a: '1', b: '2' }); // a=1&b=2
 Encodes the object as a query string
 
 ```javascript
-$router.stringifySearch($router.search); // {"x":"1","y":["2","3"],"z":""}
+$router.stringifySearch({ a: '1', b: '2' }); // a=1&b=2
 ```
 
 ### \$router.bind()
 
-Binds the handler function for the path. The first argument is a regular expression, and the second argument is a function. When the path is updated, the function executes if the regular expression matches successfully
+Binds the handler function for the path. The first argument is a regular expression, and the second is a function. When the path is updated, the function executes if the regular expression matches successfully
 
 ```javascript
 $router.bind(/test/, () => alert('hi~')).bind(/test2/, () => alert('hey~'));
@@ -98,7 +99,7 @@ $router.bind(/test/, () => alert('hi~')).bind(/test2/, () => alert('hey~'));
 Remove the binding. Notice: The regular expression should be the same as that used in \$router.bind()
 
 ```javascript
-$router.unbind(/test/);
+$router.unbind(/test/).unbind(/test2/);
 ```
 
 ### \$router.unbindAll()

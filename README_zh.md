@@ -51,12 +51,13 @@ $router.get([null, null, 'ddd']); // aaa/bbb/ddd
 
 ### \$router.set()
 
-设置路径
+设置路径以预期
 
 ```javascript
 $router.set('a/b/c');
 $router.set(['a', 'b', 'c']);
 $router.set('a', 'b', 'c');
+$router.set([null, null, 'ddd']); // to aaa/bbb/ddd
 ```
 
 ### \$router.modify()
@@ -71,10 +72,10 @@ $router.modify('string', 'a', 'b', 'c'); // 'a/b/c'
 
 ### \$router.parseSearch()
 
-解析查询字符串
+将查询字符串解析为一个对象
 
 ```javascript
-$router.parseSearch({ a: '1', b: '2' }); // a=1&b=2
+$router.parseSearch($router.search); // {"x":"1","y":["2","3"],"z":""}
 ```
 
 ### \$router.stringifySearch()
@@ -82,7 +83,7 @@ $router.parseSearch({ a: '1', b: '2' }); // a=1&b=2
 将对象编码为查询字符串
 
 ```javascript
-$router.stringifySearch($router.search); // {"x":"1","y":["2","3"],"z":""}
+$router.stringifySearch({ a: '1', b: '2' }); // a=1&b=2
 ```
 
 ### \$router.bind()
@@ -98,7 +99,7 @@ $router.bind(/test/, () => alert('hi~')).bind(/test2/, () => alert('hey~'));
 解除绑定。注意：该正则表达式需与绑定时一致。
 
 ```javascript
-$router.unbind(/test/);
+$router.unbind(/test/).unbind(/test2/);
 ```
 
 ### \$router.unbindAll()

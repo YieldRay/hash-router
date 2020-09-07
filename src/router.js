@@ -86,7 +86,7 @@ Object.defineProperty($router, 'pathname', {
 });
 
 Object.defineProperty($router, 'search', {
-    /*
+    /**
      * @member search - some string after '?' of hash
      */
     get() {
@@ -102,7 +102,7 @@ Object.defineProperty($router, 'search', {
 });
 
 Object.defineProperty($router, 'array', {
-    /*
+    /**
      * @member array - array getter/setter
      */
     get() {
@@ -142,21 +142,15 @@ Object.assign($router, {
 
 Object.assign($router, {
     /**
+     * @protected {Map} _bound
+     */
+    _bound: new Map(),
+    /**
      * @function bind - $router.bind(/regexp/,'#hash')
      * @param {RegExp} regexp - to match a new-found hash, first word is '#' !
      * @param {function} func - if matched, call this function
      * @return {Object} - return this, allowing chain calls
-     *
-     * @function unbind
-     * @param {RegExp} regexp - to match a new-found hash, first word is '#' !
-     * @return {Object} - return this, allowing chain calls
-     *
-     * @function unbindAll
-     * @static {Object} - return this, allowing chain calls
-     *
-     * @protected {Map} _bound
      */
-    _bound: new Map(),
     bind(regexp, func, force) {
         // prevent twice bind
         const str = String(regexp);
@@ -173,11 +167,20 @@ Object.assign($router, {
         window.addEventListener('hashchange', this._bound.get(str));
         return this;
     },
+    /**
+     * @function unbind
+     * @param {RegExp} regexp - to match a new-found hash, first word is '#' !
+     * @return {Object} - return this, allowing chain calls
+     */
     unbind(regexp) {
         window.removeEventListener('hashchange', this._bound.get(String(regexp)));
         if (!this._bound.delete(String(regexp))) throw new Error(`Unbind ${regexp} failed`);
         return this;
     },
+    /**
+     * @function unbindAll
+     * @static {Object} - return this, allowing chain calls
+     */
     unbindAll() {
         for (let key of this_.bound) {
             window.removeEventListener('hashchange', this._bound.get(key));
@@ -189,7 +192,7 @@ Object.assign($router, {
 });
 
 Object.assign($router, {
-    /*
+    /**
      * @function stringifySearch
      * @param q {Object}
      * @return {Object} - parse {a:'1', b:'2'} to 'a=1&b=2'
@@ -210,7 +213,7 @@ Object.assign($router, {
         param = param.slice(0, -1);
         return param;
     },
-    /*
+    /**
      * @function parseSearch
      * @param path {String} - if not string, return itself
      * @return {Object} - parse 'a=1&b=2' to {a:'1', b:'2'}
@@ -245,7 +248,7 @@ Object.assign($router, {
             });
         return obj;
     },
-    /*
+    /**
      * @function pushSearch
      * @param q {Object}
      */
