@@ -92,6 +92,8 @@ $router.stringifySearch({ a: '1', b: '2' }); // a=1&b=2
 
 ```javascript
 $router.bind(/test/, () => alert('hi~')).bind(/test2/, () => alert('hey~'));
+/* 匹配路径 'cat/tech/page/1/' 然后输出 Array ["cat/tech", "tech"] */
+$router.bind(/cat\/(.[^\/]+)/, matched => console.log(matched));
 ```
 
 ### \$router.unbind()

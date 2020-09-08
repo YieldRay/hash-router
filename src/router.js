@@ -147,21 +147,29 @@ Object.assign($router, {
     _bound: new Map(),
     /**
      * @function bind - $router.bind(/regexp/,'#hash')
-     * @param {RegExp} regexp - to match a new-found hash, first word is '#' !
-     * @param {function} func - if matched, call this function
+     * @param {RegExp|String} re - to match a new-found $router.pathname
+     * @param {function} func - if matched, call this function with matced array
      * @return {Object} - return this, allowing chain calls
      */
-    bind(regexp, func, force) {
+    bind(re, func, force) {
         // prevent twice bind
-        const str = String(regexp);
-        if (!(typeof regexp === 'object' && str.startsWith('/'))) throw new Error('incoming parameters must be a RegExp');
+        let regexp, str;
+        if (typeof re === 'string') {
+            regexp = new RegExp(re);
+        } else {
+            if (!(typeof re === 'object' && String(re).startsWith('/'))) throw new Error('incoming parameters must be RegExp or String');
+            regexp = re;
+        }
+        str = String(regexp);
+
         if (this._bound.has(str)) {
             if (force) this._bound.delete(str);
             else throw new Error('One hash can only bind one function');
         }
         this._bound.set(str, function () {
-            if (regexp.test($router.path)) {
-                func();
+            const matched = $router.pathname.match(regexp);
+            if (matched) {
+                func(matched);
             }
         });
         window.addEventListener('hashchange', this._bound.get(str));
@@ -169,12 +177,21 @@ Object.assign($router, {
     },
     /**
      * @function unbind
-     * @param {RegExp} regexp - to match a new-found hash, first word is '#' !
+     * @param {RegExp|String} regexp - to match a new-found hash, first word is '#' !
      * @return {Object} - return this, allowing chain calls
      */
-    unbind(regexp) {
-        window.removeEventListener('hashchange', this._bound.get(String(regexp)));
-        if (!this._bound.delete(String(regexp))) throw new Error(`Unbind ${regexp} failed`);
+    unbind(re) {
+        let regexp, str;
+        if (typeof re === 'string') {
+            regexp = new RegExp(re);
+        } else {
+            if (!(typeof re === 'object' && String(re).startsWith('/'))) throw new Error('incoming parameters must be RegExp or String');
+            regexp = re;
+        }
+        str = String(regexp);
+
+        window.removeEventListener('hashchange', this._bound.get(str));
+        if (!this._bound.delete(str)) throw new Error(`Unbind ${str} failed`);
         return this;
     },
     /**

@@ -92,6 +92,8 @@ Binds the handler function for the path. The first argument is a regular express
 
 ```javascript
 $router.bind(/test/, () => alert('hi~')).bind(/test2/, () => alert('hey~'));
+/* match path like 'cat/tech/page/1/' and log the Array ["cat/tech", "tech"] */
+$router.bind(/cat\/(.[^\/]+)/, matched => console.log(matched));
 ```
 
 ### \$router.unbind()
