@@ -40,8 +40,8 @@
                 $router.array = eval($('input')[1].value);
             };
 
-            $router.bind(/cat\/(.[^\/]+)/, matched => {
-                console.log('hello, router!',matched);
+            $router.bind(/^cat\/(.[^\/]*)/, matched => {
+                console.log('hello, router!', matched);
             });
         </script>
     </body>

@@ -1,3 +1,4 @@
+'use strict';
 const $router = {
     /**
      * @function fix
@@ -5,6 +6,14 @@ const $router = {
     fix: function () {
         if (location.hash[1] !== '/') location.hash = '/' + location.hash.slice(1);
         location.hash = location.hash.slice(1).replace(/\/{2,}/g, '/');
+    },
+    /**
+     * @function encode - safe URI encode
+     */
+    encode: function (str) {
+        return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
+            return '%' + c.charCodeAt(0).toString(16);
+        });
     },
     /**
      * @function get
@@ -50,8 +59,9 @@ const $router = {
      * @static {undefind}
      */
     set: function (...args) {
-        if (args.length === 1) args = args[0];
-        this.path = this.get(args);
+        let arr = args;
+        if (args.length === 1) arr = args[0];
+        this.path = this.get(arr);
     },
 };
 
@@ -81,7 +91,7 @@ Object.defineProperty($router, 'pathname', {
     },
     set(str) {
         if (str.includes('?') || str.includes('#')) throw new Error('Cannot be a pathname');
-        this.path = str + this.search;
+        this.path = str;
     },
 });
 
@@ -109,7 +119,7 @@ Object.defineProperty($router, 'array', {
         return this.pathname.split('/');
     },
     set(arr) {
-        this.pathname = arr.join('/');
+        this.path = arr.join('/');
     },
 });
 
@@ -135,7 +145,7 @@ Object.assign($router, {
                 break;
 
             default:
-                throw new Error(`Wrong type <${type}>`);
+                throw new Error(`Wrong type: ${type}`);
         }
     },
 });
@@ -152,7 +162,7 @@ Object.assign($router, {
      * @return {Object} - return this, allowing chain calls
      */
     bind(re, func, force) {
-        // prevent twice bind
+        // regexp:Object str:String
         let regexp, str;
         if (typeof re === 'string') {
             regexp = new RegExp(re);
@@ -161,15 +171,15 @@ Object.assign($router, {
             regexp = re;
         }
         str = String(regexp);
-
+        // prevent twice bind
         if (this._bound.has(str)) {
             if (force) this._bound.delete(str);
             else throw new Error('One hash can only bind one function');
         }
         this._bound.set(str, function () {
-            const matched = $router.pathname.match(regexp);
+            const matched = $router.path.match(regexp);
             if (matched) {
-                func(matched);
+                func(...matched.slice(1));
             }
         });
         window.addEventListener('hashchange', this._bound.get(str));
