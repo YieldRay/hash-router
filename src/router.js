@@ -10,11 +10,15 @@ const $router = {
     /**
      * @function encode - safe URI encode
      */
-    encode: function (str) {
+    encodeURI: function (str) {
         return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
             return '%' + c.charCodeAt(0).toString(16);
         });
     },
+    /**
+     * @function decode - URI decode
+     */
+    decodeURI: decodeURIComponent,
     /**
      * @function get
      * @param {String|Array|null} after - input 'a/b/c' or ['a','b','c']
@@ -273,7 +277,7 @@ Object.assign($router, {
                     obj[key] = value;
                 }
             });
-        return obj;
+        return Object.freeze(obj);
     },
     /**
      * @function pushSearch
@@ -312,4 +316,4 @@ Object.assign($router, {
     },
 });
 
-window.$router = $router;
+window.$router = Object.seal($router);

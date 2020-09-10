@@ -1,4 +1,19 @@
 // vue-router
+var encodeReserveRE = /[!'()*]/g;
+var encodeReserveReplacer = function (c) {
+    return '%' + c.charCodeAt(0).toString(16);
+};
+var commaRE = /%2C/g;
+
+// fixed encodeURIComponent which is more conformant to RFC3986:
+// - escapes [!'()*]
+// - preserve commas
+var encode = function (str) {
+    return encodeURIComponent(str).replace(encodeReserveRE, encodeReserveReplacer).replace(commaRE, ',');
+};
+
+var decode = decodeURIComponent;
+
 function parseQuery(query) {
     var res = {};
 
