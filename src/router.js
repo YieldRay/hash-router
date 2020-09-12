@@ -152,6 +152,7 @@ Object.assign($router, {
                 throw new Error(`Wrong type: ${type}`);
         }
     },
+    params: [],
 });
 
 Object.assign($router, {
@@ -165,7 +166,7 @@ Object.assign($router, {
      * @param {function} func - if matched, call this function with matced array
      * @return {Object} - return this, allowing chain calls
      */
-    bind(re, func, force) {
+    bind(re, func, force = false) {
         // regexp:Object str:String
         let regexp, str;
         if (typeof re === 'string') {
@@ -183,7 +184,8 @@ Object.assign($router, {
         this._bound.set(str, function () {
             const matched = $router.path.match(regexp);
             if (matched) {
-                func(...matched.slice(1));
+                $router.params = matched;
+                func && func(...matched.slice(1));
             }
         });
         window.addEventListener('hashchange', this._bound.get(str));

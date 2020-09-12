@@ -5,7 +5,8 @@
     "main": "src/router.js",
     "scripts": {
         "test": "xdg-open index.html",
-        "prettier": "prettier --write . --single-quote --tab-width 4 --print-width 160 --arrow-parens avoid"
+        "prettier": "prettier --write . --single-quote --tab-width 4 --print-width 160 --arrow-parens avoid",
+        "rollup": "rollup src/router.js --file bundle.js --format iife"
     },
     "repository": {
         "type": "git",

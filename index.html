@@ -15,13 +15,14 @@
         <br />
         <button>$router.array =</button>
         <input type="text" />
-        <script>
+        <script type="module">
             window.$ = q => document.querySelectorAll(q);
             window._ = $router;
 
             onhashchange = onload = () => {
                 $('#msg')[0].innerHTML = `
         Raw hash: ${location.hash}<br>
+        Param : ['${$router.params.join("', '")}']<br>
         path: ${$router.path}<br>
         pathname: ${$router.pathname}<br>
         array: ['${$router.array.join("', '")}']<br>
@@ -40,9 +41,11 @@
                 $router.array = eval($('input')[1].value);
             };
 
-            $router.bind(/^cat\/(.[^\/]*)/, matched => {
-                console.log('hello, router!', matched);
-            });
+            $router
+                .bind(/^cat\/(.[^\/]*)/, matched => {
+                    console.log('hello, router!', matched);
+                })
+                .bind(/test/);
         </script>
     </body>
 </html>
