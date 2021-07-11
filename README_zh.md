@@ -45,13 +45,13 @@ console.log($router.path); // a/b/
 获取预期路径名
 
 ```javascript
-$router.get(); // 等于$router.pathname
+$router.get(); // 等价于$router.pathname
 $router.get([null, null, 'ddd']); // aaa/bbb/ddd
 ```
 
 ### \$router.set()
 
-设置路径以预期
+设置路径
 
 ```javascript
 $router.set('a/b/c');

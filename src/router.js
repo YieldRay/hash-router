@@ -233,7 +233,7 @@ Object.assign($router, {
     stringifySearch(q) {
         if (typeof q !== 'object') throw new Error('incoming parameters must be Object');
         let param = '';
-        for (k in q) {
+        for (let k in q) {
             let v = q[k];
             if (Array.isArray(v)) {
                 for (e of v) {
