@@ -1,18 +1,18 @@
-'use strict';
+"use strict";
 const $router = {
     /**
      * @function fix
      */
     fix: function () {
-        if (location.hash[1] !== '/') location.hash = '/' + location.hash.slice(1);
-        location.hash = location.hash.slice(1).replace(/\/{2,}/g, '/');
+        if (location.hash[1] !== "/") location.hash = "/" + location.hash.slice(1);
+        location.hash = location.hash.slice(1).replace(/\/{2,}/g, "/");
     },
     /**
      * @function encode - safe URI encode
      */
     encodeURI: function (str) {
         return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
-            return '%' + c.charCodeAt(0).toString(16);
+            return "%" + c.charCodeAt(0).toString(16);
         });
     },
     /**
@@ -33,18 +33,18 @@ const $router = {
         // we need initialize the page with location.hash='/'
         if (after.length === 0) return this.pathname;
         else if (after.length === 1) after = after[0];
-        if (typeof after === 'string') after = after.split('/');
+        if (typeof after === "string") after = after.split("/");
         // things above, can make sure 'after' is an array
-        if (!Array.isArray(after)) throw new Error('incoming parameters must be String or Array or Multiple Parameters');
+        if (!Array.isArray(after)) throw new Error("incoming parameters must be String or Array or Multiple Parameters");
         const before = this.array;
         let i;
-        let newPath = '/';
+        let newPath = "/";
         for (i = 0; i < after.length - 1; i++) {
-            if (after[i] == undefined || after[i] == '') {
+            if (after[i] == undefined || after[i] == "") {
                 if (before[i] == undefined) throw new Error(`past path[${i}] is missing`);
-                newPath += before[i] + '/';
+                newPath += before[i] + "/";
             } else {
-                newPath += after[i] + '/';
+                newPath += after[i] + "/";
             }
         }
 
@@ -69,61 +69,61 @@ const $router = {
     },
 };
 
-Object.defineProperty($router, 'path', {
+Object.defineProperty($router, "path", {
     /**
      * @member path - string getter/setter
      */
     get() {
         this.fix();
-        return location.hash.slice(2).replace(/\/{2,}/g, '/');
+        return location.hash.slice(2).replace(/\/{2,}/g, "/");
     },
     set(str) {
         this.fix();
-        location.hash = '/' + str.replace(/\/{2,}/g, '/');
+        location.hash = "/" + str.replace(/\/{2,}/g, "/");
     },
 });
 
-Object.defineProperty($router, 'pathname', {
+Object.defineProperty($router, "pathname", {
     /**
      * @member pathname - string getter/setter
      */
     get() {
         const path = this.path;
-        const pos = path.indexOf('?');
+        const pos = path.indexOf("?");
         if (pos > -1) return path.slice(0, pos);
         return path;
     },
     set(str) {
-        if (str.includes('?') || str.includes('#')) throw new Error('Cannot be a pathname');
+        if (str.includes("?") || str.includes("#")) throw new Error("Cannot be a pathname");
         this.path = str;
     },
 });
 
-Object.defineProperty($router, 'search', {
+Object.defineProperty($router, "search", {
     /**
      * @member search - some string after '?' of hash
      */
     get() {
         const path = this.path;
-        const pos = path.indexOf('?');
+        const pos = path.indexOf("?");
         if (pos > -1) return path.slice(pos + 1, path.length);
-        return '';
+        return "";
     },
     set(str) {
-        if (typeof str !== 'string') throw new Error('incoming parameters must be String');
-        this.path = this.pathname + '?' + str;
+        if (typeof str !== "string") throw new Error("incoming parameters must be String");
+        this.path = this.pathname + "?" + str;
     },
 });
 
-Object.defineProperty($router, 'array', {
+Object.defineProperty($router, "array", {
     /**
      * @member array - array getter/setter
      */
     get() {
-        return this.pathname.split('/');
+        return this.pathname.split("/");
     },
     set(arr) {
-        this.path = arr.join('/');
+        this.path = arr.join("/");
     },
 });
 
@@ -135,17 +135,17 @@ Object.assign($router, {
      */
     modify(type, ...args) {
         let tmp = args;
-        if (typeof args[0] === 'array') tmp = args[0];
-        if (typeof args[0] === 'string') tmp = args[0].split('/');
+        if (typeof args[0] === "array") tmp = args[0];
+        if (typeof args[0] === "string") tmp = args[0].split("/");
         switch (type) {
-            case 'array':
-            case 'Array':
+            case "array":
+            case "Array":
                 return tmp;
                 break;
 
-            case 'string':
-            case 'String':
-                return tmp.join('/');
+            case "string":
+            case "String":
+                return tmp.join("/");
                 break;
 
             default:
@@ -169,17 +169,17 @@ Object.assign($router, {
     bind(re, func, force = false) {
         // regexp:Object str:String
         let regexp, str;
-        if (typeof re === 'string') {
+        if (typeof re === "string") {
             regexp = new RegExp(re);
         } else {
-            if (!(typeof re === 'object' && String(re).startsWith('/'))) throw new Error('incoming parameters must be RegExp or String');
+            if (!(typeof re === "object" && String(re).startsWith("/"))) throw new Error("incoming parameters must be RegExp or String");
             regexp = re;
         }
         str = String(regexp);
         // prevent twice bind
         if (this._bound.has(str)) {
             if (force) this._bound.delete(str);
-            else throw new Error('One hash can only bind one function');
+            else throw new Error("One hash can only bind one function");
         }
         this._bound.set(str, function () {
             const matched = $router.path.match(regexp);
@@ -188,7 +188,7 @@ Object.assign($router, {
                 func && func(...matched.slice(1));
             }
         });
-        window.addEventListener('hashchange', this._bound.get(str));
+        window.addEventListener("hashchange", this._bound.get(str));
         return this;
     },
     /**
@@ -198,15 +198,15 @@ Object.assign($router, {
      */
     unbind(re) {
         let regexp, str;
-        if (typeof re === 'string') {
+        if (typeof re === "string") {
             regexp = new RegExp(re);
         } else {
-            if (!(typeof re === 'object' && String(re).startsWith('/'))) throw new Error('incoming parameters must be RegExp or String');
+            if (!(typeof re === "object" && String(re).startsWith("/"))) throw new Error("incoming parameters must be RegExp or String");
             regexp = re;
         }
         str = String(regexp);
 
-        window.removeEventListener('hashchange', this._bound.get(str));
+        window.removeEventListener("hashchange", this._bound.get(str));
         if (!this._bound.delete(str)) throw new Error(`Unbind ${str} failed`);
         return this;
     },
@@ -216,7 +216,7 @@ Object.assign($router, {
      */
     unbindAll() {
         for (let key of this_.bound) {
-            window.removeEventListener('hashchange', this._bound.get(key));
+            window.removeEventListener("hashchange", this._bound.get(key));
             // if(!this._bound.delete(key)) throw new Error(`Unbind ${key} failed`)
         }
         this_.bound.clear();
@@ -231,15 +231,18 @@ Object.assign($router, {
      * @return {Object} - parse {a:'1', b:'2'} to 'a=1&b=2'
      */
     stringifySearch(q) {
-        if (typeof q !== 'object') throw new Error('incoming parameters must be Object');
-        let param = '';
+        if (typeof q !== "object") throw new Error("incoming parameters must be Object");
+        let param = "";
         for (let k in q) {
+            if (typeof k !== "string") throw new Error("key must be string");
             let v = q[k];
             if (Array.isArray(v)) {
                 for (e of v) {
+                    if (typeof e !== "string") throw new Error("value must be string");
                     param += `${k}=${e}&`;
                 }
             } else {
+                if (typeof v !== "string") throw new Error("value must be array or string");
                 param += `${k}=${v}&`;
             }
         }
@@ -252,15 +255,15 @@ Object.assign($router, {
      * @return {Object} - parse 'a=1&b=2' to {a:'1', b:'2'}
      */
     parseSearch(path) {
-        if (typeof path !== 'string') throw new Error('incoming parameters must be String');
-        const obj = Object.create(null);
-        path.split('&')
+        if (typeof path !== "string") throw new Error("incoming parameters must be String");
+        const obj = {};
+        path.split("&")
             .filter(e => e.length > 0)
             .forEach(e => {
                 // e: key=value or key
-                const pos = e.indexOf('=');
+                const pos = e.indexOf("=");
                 let key,
-                    value = '';
+                    value = "";
                 if (pos > -1) {
                     key = e.slice(0, pos);
                     value = e.slice(pos + 1);
@@ -270,7 +273,7 @@ Object.assign($router, {
                 // key,value
                 const exist = obj[key];
                 if (exist) {
-                    if (typeof exist === 'string') {
+                    if (typeof exist === "string") {
                         obj[key] = [exist, value];
                     } else {
                         obj[key].push(value);
@@ -305,7 +308,7 @@ Object.assign($router, {
                 resolve(this._cached.get(url));
             } else {
                 let xhr = new XMLHttpRequest();
-                xhr.open('GET', url);
+                xhr.open("GET", url);
                 xhr.onload = () => {
                     this._cached.set(url, xhr);
                     resolve(xhr);

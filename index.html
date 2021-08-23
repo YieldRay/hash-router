@@ -6,6 +6,7 @@
         <title>ROUTER TEST</title>
         <script src="src/router.js"></script>
     </head>
+
     <body>
         <h1>hashRouter</h1>
         <p>hash go directly!</p>
@@ -20,7 +21,7 @@
             window._ = $router;
 
             onhashchange = onload = () => {
-                $('#msg')[0].innerHTML = `
+                $("#msg")[0].innerHTML = `
         Raw hash: ${location.hash}<br>
         Param : ['${$router.params.join("', '")}']<br>
         path: ${$router.path}<br>
@@ -28,22 +29,22 @@
         array: ['${$router.array.join("', '")}']<br>
         search: ${$router.search} -> ${JSON.stringify($router.parseSearch($router.search))}
         `;
-                $('input')[0].value = $router.path;
-                $('input')[1].value = `['${$router.array.join("', '")}']`;
+                $("input")[0].value = $router.path;
+                $("input")[1].value = `['${$router.array.join("', '")}']`;
                 console.debug(location.hash);
             };
 
-            $('button')[0].onclick = () => {
-                $router.path = $('input')[0].value;
+            $("button")[0].onclick = () => {
+                $router.path = $("input")[0].value;
             };
 
-            $('button')[1].onclick = () => {
-                $router.array = eval($('input')[1].value);
+            $("button")[1].onclick = () => {
+                $router.array = eval($("input")[1].value);
             };
 
             $router
                 .bind(/^cat\/(.[^\/]*)/, matched => {
-                    console.log('hello, router!', matched);
+                    console.log("hello, router!", matched);
                 })
                 .bind(/test/);
         </script>
