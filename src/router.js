@@ -186,6 +186,8 @@ Object.assign($router, {
             if (matched) {
                 $router.params = matched;
                 func && func(...matched.slice(1));
+            } else {
+                $router.params.length = 0;
             }
         });
         window.addEventListener("hashchange", this._bound.get(str));
