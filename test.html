@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body></body>
+    <script src="./dist/router.js"></script>
+    <script>
+        const { createHashRouter, $router } = hashRouter;
+        const ref = Object.create(null);
+        createHashRouter(
+            document.body,
+            [
+                {
+                    path: "/",
+                    component: `<h1>Home</h1>`,
+                    callback: console.log,
+                },
+                {
+                    path: "/user/:id", // path, except from special handler, should always starts with a slash
+                    component: `<h1>id</h1>`,
+                    callback: ({ params, path, index }) => {
+                        // this function called before component redered
+                        console.log(Number(params.id));
+                    },
+                },
+                {
+                    path: "/color/:color",
+                    component({ params }) {
+                        // component can also be a function
+                        return `<h1 style="color:${params.color}">Color!</h1>`;
+                    },
+                },
+                {
+                    path: "404", // special handler
+                    component: `<h1>404</h1>`,
+                    callback: console.log,
+                },
+            ],
+            ref
+        );
+    </script>
+</html>
