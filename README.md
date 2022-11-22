@@ -58,8 +58,8 @@ createHashRouter(document.body, [
 console.log(createHashRouter.result?.params);
 // the result is same as the one passed to the component function
 
-// $router is a helper URL object, notice that the hashChange listener just depend on the pathname,
-// rather than the entire hash
+// $router is a helper URL object, note that the hashChange listener just depends on the pathname,
+// rather than the entire path or even location.hash
 $router.path = "/";
 $router.pathname = "/color/red";
 $router.searchParams.set("key", "value");
