@@ -5,26 +5,29 @@
  * Just listen the router by hashchange event
  **/
 
-import { removeHeadHash } from "./utils";
+export function removeHeadHash(hash: string): string {
+    const removeHash = hash.startsWith("#") ? hash.slice(1) : hash;
+    return removeHash.startsWith("/") ? removeHash : "/" + removeHash;
+}
 
-function getCurrentRoute() {
+export function getCurrentRoute() {
     const base = location.origin;
     const hash = removeHeadHash(location.hash);
     const url = new URL(hash, base);
     return url;
 }
 
-export const $router = new Proxy(Object.create(null), {
+export default new Proxy(Object.create(null), {
     set(target, p, newValue, receiver) {
         if (p === "path") {
-            location.hash = newValue;
+            const path = String(newValue);
+            location.hash = path.startsWith("/") ? path : "/" + path;
             return true;
         }
 
         const triedURL = getCurrentRoute(); // use a triedURL to calc the result
         Reflect.set(triedURL, p, newValue);
-        const unneeded = triedURL.origin + triedURL.pathname;
-        location.hash = triedURL.href.replace(unneeded, ""); // change hash, then triedURL can be GC
+        location.hash = triedURL.href.replace(triedURL.origin, ""); // change hash, then triedURL can be GC
         return true;
     },
     get(target, p, receiver) {

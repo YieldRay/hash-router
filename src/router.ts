@@ -1,14 +1,14 @@
 import { match, type MatchFunction, Match, MatchResult } from "path-to-regexp";
-import { removeHeadHash } from "./utils";
+import $router from "./proxy";
+export { $router };
 
 interface Route {
     // use `path-to-regexp` to match
     path: string;
     // the component is simply html string which will set to innerHTML
-    component?: string | ((matched: Match) => string);
-    callback?: (matched: Match) => void;
-    // callback is called before component is rendered
-    // if is matched, the callback function always receive object
+    component: string | Node | ((matched: Match) => string | Node);
+    // component can also be a function
+    // if is matched, the component function always receive object
     // so except from 404 route, it can never be false
 }
 
@@ -25,60 +25,72 @@ function createMatchRoute(routes: Array<Route>) {
     return definedMatcher;
 }
 
+function renderToContainer(containerElement: Element, component: Route["component"], result: MatchResult | false) {
+    switch (typeof component) {
+        case "string": {
+            containerElement.innerHTML = component;
+            break;
+        }
+        case "function": {
+            const html = component(result);
+            if (typeof html === "string") {
+                containerElement.innerHTML = html;
+            } else if (html instanceof Node) {
+                containerElement.innerHTML = "";
+                containerElement.appendChild(html);
+            } else {
+                throw new Error("the component function should return html string or Node");
+            }
+            break;
+        }
+        default: {
+            if (component instanceof Node) {
+                containerElement.innerHTML = "";
+                containerElement.appendChild(component);
+            } else {
+                throw new Error("component is not defined or invalid");
+            }
+        }
+    }
+}
+
+interface CreateRouterFunction {
+    (containerElement: Element, routes: Array<Route>): void;
+    result: Match;
+}
 /**
  *
  * @param containerElement The container element where the component is rendered
  * @param routes Route Array
- * @param refObj Given a reference Object, whenever router matches, the matched result will assigned to it
  */
-export function createHashRouter(containerElement: Element, routes: Array<Route>, refObj?: object) {
+export const createHashRouter: CreateRouterFunction = function (containerElement: Element, routes: Array<Route>) {
+    if (!Array.isArray(routes)) throw new Error("routes should be an array");
     const matcher = createMatchRoute(routes);
 
     const matchOne = () => {
-        const hash = removeHeadHash(location.hash);
+        const hash = $router.pathname; //! use $router.pathname
         let isMatched = false;
         for (const route of matcher) {
             const result = route._fn(hash);
             if (result) {
-                if (refObj) Object.assign(refObj, result);
-                route.callback?.(result);
-                switch (typeof route.component) {
-                    case "string":
-                        containerElement.innerHTML = route.component;
-                        break;
-                    case "function":
-                        containerElement.innerHTML = route.component(result);
-                        break;
-                    default:
-                        containerElement.innerHTML = "Error: component is not defined";
-                }
+                createHashRouter.result = result; // add result
+                renderToContainer(containerElement, route.component, result);
                 isMatched = true;
                 break;
             }
         }
         if (!isMatched) {
+            const result = false;
+            createHashRouter.result = result;
             const notFoundRoute = routes.find((r) => r.path == "404");
-            notFoundRoute?.callback?.(false);
-            if (notFoundRoute)
-                switch (typeof notFoundRoute.component) {
-                    case "string":
-                        containerElement.innerHTML = notFoundRoute.component;
-                        break;
-                    case "function":
-                        containerElement.innerHTML = notFoundRoute.component(false);
-                        break;
-                    default:
-                        containerElement.innerHTML = "Error: component is not defined";
-                }
-            else {
+            if (notFoundRoute) {
+                renderToContainer(containerElement, notFoundRoute.component, result);
+            } else {
                 containerElement.innerHTML = `404 Not Found`;
             }
-            if (refObj) for (const key of Object.keys(refObj)) Reflect.deleteProperty(refObj, key);
         }
     };
 
     window.addEventListener("hashchange", matchOne);
     matchOne();
-}
-
-export { $router } from "./proxy";
+} as CreateRouterFunction;
