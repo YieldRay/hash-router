@@ -22,8 +22,8 @@ export function createHashedURL(location = window.location) {
               case "set":
               case "sort":
                 const fn = Reflect.get(url.searchParams, prop, receiver) as URLSearchParams[typeof prop];
-                const modifiedFn = function (this: any, ...args: Parameters<typeof fn>) {
-                  let result;
+                const modifiedFn: typeof fn = function (this: any, ...args: Parameters<typeof fn>) {
+                  let result: ReturnType<typeof fn>;
                   if (this === receiver) {
                     // receiver is a Proxy, proxy for url.searchParams
                     // if we use a Proxy, it will throw `Value of "this" must be of type URLSearchParams`
@@ -31,6 +31,7 @@ export function createHashedURL(location = window.location) {
                   } else {
                     result = fn.apply(this, args as any);
                   }
+                  //! reactively update the URL hash
                   location.hash = url.pathname + url.search + url.hash;
                   return result;
                 };
@@ -63,8 +64,9 @@ export function createHashedURL(location = window.location) {
         case "toString":
         case "toJSON":
           const fn = Reflect.get(url, k, receiver);
-          return function toJSON(this: any, ...args: any) {
+          return function (this: any, ...args: any) {
             if (this === receiver) {
+              // this is the Proxy, so we need to use the real URL object here, which is equivalent to url
               return fn.apply(url, args);
             }
             return fn.apply(this, args);

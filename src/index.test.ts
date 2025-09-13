@@ -125,15 +125,6 @@ test("should update searchParams and reflect in href", () => {
   assert.strictEqual(url.href, "https://example.net/hash?q=1#extra");
 });
 
-test("should throw error when using destructured searchParams methods", () => {
-  const url = createHashedURL(new DummyLocation("https://example.net/pathname?query#hash?q=a#extra"));
-  const { set } = url.searchParams;
-  assert.throws(() => set("k", "v"), {
-    name: "TypeError",
-    message: 'Value of "this" must be of type URLSearchParams',
-  });
-});
-
 // Test basic URL property access
 test("basic property access - hash", () => {
   const url = createHashedURL(new DummyLocation("https://example.com/page#/home?tab=1#section"));
@@ -208,6 +199,115 @@ test("searchParams.get() method", () => {
   const url = createHashedURL(new DummyLocation("https://example.com/page#/home?param=value"));
   assert.strictEqual(url.searchParams.get("param"), "value");
   assert.strictEqual(url.searchParams.get("nonexistent"), null);
+});
+
+// Tests for destructured searchParams methods throwing TypeError
+test("should throw error when using destructured searchParams.set", () => {
+  const url = createHashedURL(new DummyLocation("https://example.net/pathname?query#hash?q=a#extra"));
+  const { set } = url.searchParams;
+  assert.throws(() => set("k", "v"), {
+    name: "TypeError",
+    message: 'Value of "this" must be of type URLSearchParams',
+  });
+});
+
+test("should throw error when using destructured searchParams.append", () => {
+  const url = createHashedURL(new DummyLocation("https://example.net/pathname?query#hash?q=a#extra"));
+  const { append } = url.searchParams;
+  assert.throws(() => append("k", "v"), {
+    name: "TypeError",
+    message: 'Value of "this" must be of type URLSearchParams',
+  });
+});
+
+test("should throw error when using destructured searchParams.delete", () => {
+  const url = createHashedURL(new DummyLocation("https://example.net/pathname?query#hash?q=a#extra"));
+  const { delete: del } = url.searchParams;
+  assert.throws(() => del("k"), {
+    name: "TypeError",
+    message: 'Value of "this" must be of type URLSearchParams',
+  });
+});
+
+test("should throw error when using destructured searchParams.get", () => {
+  const url = createHashedURL(new DummyLocation("https://example.net/pathname?query#hash?q=a#extra"));
+  const { get } = url.searchParams;
+  assert.throws(() => get("k"), {
+    name: "TypeError",
+    message: 'Value of "this" must be of type URLSearchParams',
+  });
+});
+
+test("should throw error when using destructured searchParams.getAll", () => {
+  const url = createHashedURL(new DummyLocation("https://example.net/pathname?query#hash?q=a#extra"));
+  const { getAll } = url.searchParams;
+  assert.throws(() => getAll("k"), {
+    name: "TypeError",
+    message: 'Value of "this" must be of type URLSearchParams',
+  });
+});
+
+test("should throw error when using destructured searchParams.has", () => {
+  const url = createHashedURL(new DummyLocation("https://example.net/pathname?query#hash?q=a#extra"));
+  const { has } = url.searchParams;
+  assert.throws(() => has("k"), {
+    name: "TypeError",
+    message: 'Value of "this" must be of type URLSearchParams',
+  });
+});
+
+test("should throw error when using destructured searchParams.sort", () => {
+  const url = createHashedURL(new DummyLocation("https://example.net/pathname?query#hash?q=a#extra"));
+  const { sort } = url.searchParams;
+  assert.throws(() => sort(), {
+    name: "TypeError",
+    message: 'Value of "this" must be of type URLSearchParams',
+  });
+});
+
+test("should throw error when using destructured searchParams.keys", () => {
+  const url = createHashedURL(new DummyLocation("https://example.net/pathname?query#hash?q=a#extra"));
+  const { keys } = url.searchParams;
+  assert.throws(() => keys(), {
+    name: "TypeError",
+    message: 'Value of "this" must be of type URLSearchParams',
+  });
+});
+
+test("should throw error when using destructured searchParams.values", () => {
+  const url = createHashedURL(new DummyLocation("https://example.net/pathname?query#hash?q=a#extra"));
+  const { values } = url.searchParams;
+  assert.throws(() => values(), {
+    name: "TypeError",
+    message: 'Value of "this" must be of type URLSearchParams',
+  });
+});
+
+test("should throw error when using destructured searchParams.entries", () => {
+  const url = createHashedURL(new DummyLocation("https://example.net/pathname?query#hash?q=a#extra"));
+  const { entries } = url.searchParams;
+  assert.throws(() => entries(), {
+    name: "TypeError",
+    message: 'Value of "this" must be of type URLSearchParams',
+  });
+});
+
+test("should throw error when using destructured searchParams.forEach", () => {
+  const url = createHashedURL(new DummyLocation("https://example.net/pathname?query#hash?q=a#extra"));
+  const { forEach } = url.searchParams;
+  assert.throws(() => forEach(() => {}), {
+    name: "TypeError",
+    message: 'Value of "this" must be of type URLSearchParams',
+  });
+});
+
+test("should throw error when using destructured searchParams.toString", () => {
+  const url = createHashedURL(new DummyLocation("https://example.net/pathname?query#hash?q=a#extra"));
+  const { toString } = url.searchParams;
+  assert.throws(() => toString(), {
+    name: "TypeError",
+    message: 'Value of "this" must be of type URLSearchParams',
+  });
 });
 
 test("searchParams.has() method", () => {
@@ -303,6 +403,25 @@ test("toString() method", () => {
 test("toJSON() method", () => {
   const url = createHashedURL(new DummyLocation("https://example.com/page#/home?param=value#section"));
   assert.strictEqual(url.toJSON(), "https://example.com/home?param=value#section");
+});
+
+// Tests for destructured toString and toJSON methods on the url object
+test("should throw error when using destructured url.toString", () => {
+  const url = createHashedURL(new DummyLocation("https://example.com/page#/home?param=value#section"));
+  const { toString } = url;
+  assert.throws(() => toString(), {
+    name: "TypeError",
+    message: "Cannot read properties of undefined (reading 'URL')",
+  });
+});
+
+test("should throw error when using destructured url.toJSON", () => {
+  const url = createHashedURL(new DummyLocation("https://example.com/page#/home?param=value#section"));
+  const { toJSON } = url;
+  assert.throws(() => toJSON(), {
+    name: "TypeError",
+    message: "Cannot read properties of undefined (reading 'URL')",
+  });
 });
 
 // Test searchParams iterators
