@@ -1,0 +1,7 @@
+procs:
+  bundle:
+    shell: |
+      deno bundle --watch --outdir dist index.html
+  serve:
+    shell: |
+      serve dist

@@ -1,0 +1,12 @@
+{
+  "name": "docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "mprocs",
+    "build": "deno bundle --outdir dist index.html"
+  },
+  "dependencies": {
+    "hash-router": "workspace:*"
+  }
+}

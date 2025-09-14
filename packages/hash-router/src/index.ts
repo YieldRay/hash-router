@@ -3,7 +3,9 @@
  * @returns A Proxy object that behaves like a URL object, but with the pathname derived from the hash fragment of the source URL.
  */
 export function createHashedURL(location = window.location) {
-  return new Proxy(Object.create(null) as URL, {
+  const sourceURL = new URL(location.href);
+  // other Proxy trap will be forwarded to sourceURL
+  return new Proxy(sourceURL, {
     get(_, prop, receiver) {
       const k = prop as keyof URL;
       const sourceURL = new URL(location.href);
