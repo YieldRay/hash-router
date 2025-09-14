@@ -30,6 +30,10 @@ export function createHashedURL(location = window.location) {
         // @ts-ignore
         _.searchParams = new Proxy(url.searchParams, {
           get(_, prop, receiver) {
+            const sourceURL = new URL(location.href);
+            const path = withPrefixSlash(normalizePath(withoutPrefixHash(sourceURL.hash)));
+            const url = new URL(path, sourceURL);
+
             switch (prop) {
               case "size":
                 return url.searchParams.size;
