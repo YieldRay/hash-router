@@ -168,6 +168,12 @@ test("inherited source URL properties - origin", () => {
 });
 
 // Test various searchParams methods
+test("searchParams.size", () => {
+  const location = new DummyLocation("https://example.com/page#/home?existing=value");
+  const url = createHashedURL(location);
+  assert.strictEqual(url.searchParams.size, 1);
+});
+
 test("searchParams.append() method", () => {
   const location = new DummyLocation("https://example.com/page#/home?existing=value");
   const url = createHashedURL(location);

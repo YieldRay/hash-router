@@ -2,6 +2,8 @@
   "name": "root",
   "private": true,
   "scripts": {
+    "dev": "pnpm run -r dev",
+    "test": "pnpm run -r test",
     "build": "pnpm run -r build"
   }
 }

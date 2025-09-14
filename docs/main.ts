@@ -3,8 +3,10 @@ import { createHashedURL } from "hash-router";
 const app = document.getElementById("app")!;
 
 const url = createHashedURL();
+window["url"] = url; // for debugging
 
 function render() {
+  const sp = [...url.searchParams].map(([k, v]) => `    '${k}' => '${v}'`).join(",\n");
   app.innerHTML = /*html*/ `\
 <pre style="font-family: 'Fira Mono', 'Consolas', 'Menlo', 'Monaco', 'Liberation Mono', 'Courier New', monospace;">
 URL { 
@@ -18,8 +20,7 @@ URL {
   port: '${url.port}',
   protocol: '${url.protocol}',
   search: '${url.search}',
-  searchParams: SearchParams {
-${[...url.searchParams].map(([k, v]) => `    '${k}' => '${v}'`).join(",\n")},
+  searchParams: SearchParams {${sp.length ? `\n${sp}` : ""}
     size: ${url.searchParams.size}
   }
   username: '${url.username}'

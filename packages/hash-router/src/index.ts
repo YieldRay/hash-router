@@ -3,9 +3,22 @@
  * @returns A Proxy object that behaves like a URL object, but with the pathname derived from the hash fragment of the source URL.
  */
 export function createHashedURL(location = window.location) {
-  const sourceURL = new URL(location.href);
-  // other Proxy trap will be forwarded to sourceURL
-  return new Proxy(sourceURL, {
+  const SOURCE_URL = new URL(location.href);
+
+  return new Proxy(Object.create(null) as URL, {
+    apply: (_, thisArg, args) => Reflect.apply(SOURCE_URL as any, thisArg, args),
+    construct: (_, args, newTarget) => Reflect.construct(SOURCE_URL as any, args, newTarget),
+    defineProperty: (_, p, attributes) => Reflect.defineProperty(SOURCE_URL, p, attributes),
+    deleteProperty: (_, p) => Reflect.deleteProperty(SOURCE_URL, p),
+    getOwnPropertyDescriptor: (_, p) => Reflect.getOwnPropertyDescriptor(SOURCE_URL, p),
+    getPrototypeOf: (_) => Reflect.getPrototypeOf(SOURCE_URL),
+    has: (_, p) => Reflect.has(SOURCE_URL, p),
+    isExtensible: (_) => Reflect.isExtensible(SOURCE_URL),
+    ownKeys: (_) => Reflect.ownKeys(SOURCE_URL),
+    preventExtensions: (_) => Reflect.preventExtensions(SOURCE_URL),
+    setPrototypeOf: (_, v) => Reflect.setPrototypeOf(SOURCE_URL, v),
+    // other Proxy trap will be forwarded to SOURCE_URL
+
     get(_, prop, receiver) {
       const k = prop as keyof URL;
       const sourceURL = new URL(location.href);
@@ -18,7 +31,9 @@ export function createHashedURL(location = window.location) {
         _.searchParams = new Proxy(url.searchParams, {
           get(_, prop, receiver) {
             switch (prop) {
-              // methods that will change the state of URLSearchParams
+              case "size":
+                return url.searchParams.size;
+              // intercept the common methods that will change the state of URLSearchParams
               case "append":
               case "delete":
               case "set":
